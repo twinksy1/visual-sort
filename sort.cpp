@@ -161,7 +161,7 @@ int main()
 {
         srand((unsigned)time(NULL));
         int done = 0;
-	printf("	MENU OPTIONS ON TOP LEFT OF SCREEN\n");
+	printf("\x1b[1m	MENU OPTIONS ON TOP LEFT OF SCREEN\n");
 	sleep(2);
         while (!done) {
                 //Handle all events in queue
@@ -245,7 +245,7 @@ void bubblesort()
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
-	printf("Bubble sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+	printf("\nBubble sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 }
 
 void insertionsort()
@@ -266,7 +266,7 @@ void insertionsort()
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
-	printf("Insertion sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+	printf("\nInsertion sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 }
 
 void selectionsort()
@@ -281,7 +281,7 @@ void selectionsort()
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
-	printf("Selection sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+	printf("\nSelection sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 }
 
 int partition (int low, int high)  
@@ -338,7 +338,7 @@ void count()
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
-	printf("Count sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+	printf("\nCount sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 }
 
 void doubleSelectionsort()
@@ -380,7 +380,7 @@ void doubleSelectionsort()
 
 	auto endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = endTime - start;
-	printf("Double Selection sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+	printf("\nDouble Selection sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
         return;
 }
 
@@ -489,7 +489,7 @@ int check_keys(XEvent *e)
 			quicksort(0, amount-1);
 			auto end = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double, std::milli> elapsed = end - start;
-			printf("Quick sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+			printf("\nQuick sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 			g.sorting = false;
 			break;
 			   }
@@ -520,7 +520,7 @@ int check_keys(XEvent *e)
 			g.sorting = false;
 			auto end = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double, std::milli> elapsed = end - start;
-			printf("Merge sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+			printf("\nMerge sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 			break;
 			   }
 		case XK_h: {
@@ -530,7 +530,7 @@ int check_keys(XEvent *e)
 			g.sorting = false;
 			auto end = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double, std::milli> elapsed = end - start;
-			printf("Heap sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
+			printf("\nHeap sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 			break;
 			   }
 		case XK_Escape:
