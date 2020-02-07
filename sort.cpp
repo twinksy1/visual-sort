@@ -163,17 +163,15 @@ int main()
         int done = 0;
 	printf("\x1b[1m	MENU OPTIONS ON TOP LEFT OF SCREEN\n");
 	sleep(2);
-        while (!done) {
+        while(!done) {
                 //Handle all events in queue
-                while (x11.getPending()) {
+                while(x11.getPending()) {
                         XEvent e;
                         x11.getNextEvent(&e);
                         check_resize(&e);
                         check_mouse(&e);
                         done = check_keys(&e);
                 }
-                //Process physics and rendering every frame
-                physics();
                 render();
                 x11.swapBuffers();
         }
@@ -392,9 +390,9 @@ void merge(int l, int m, int r)
 
 	int L[n1], R[n2]; 
 
-	for (i = 0; i < n1; i++) 
+	for(i = 0; i < n1; i++) 
 		L[i] = g.list[l+i]; 
-	for (j = 0; j < n2; j++) 
+	for(j = 0; j < n2; j++) 
 		R[j] = g.list[m+1+j]; 
 
 	i = 0; 
@@ -412,13 +410,13 @@ void merge(int l, int m, int r)
 		k++; 
 	} 
 
-	while (i < n1) { 
+	while(i < n1) { 
 		g.list[k] = L[i]; 
 		i++; 
 		k++; 
 	} 
 
-	while (j < n2) { 
+	while(j < n2) { 
 		g.list[k] = R[j]; 
 		j++; 
 		k++; 
@@ -445,13 +443,13 @@ void heapify(int n, int i)
 	int child1 = 2*i + 1;
 	int child2 = 2*i + 2;
 
-	if(child1<n && g.list[child1] > g.list[largest])
+	if (child1<n && g.list[child1] > g.list[largest])
 		largest = child1;
 
-	if(child2<n && g.list[child2] > g.list[largest])
+	if (child2<n && g.list[child2] > g.list[largest])
 		largest = child2;
 
-	if(largest != i) {
+	if (largest != i) {
 		SWAP(g.list[i], g.list[largest]);
 		heapify(n, largest);
 	}
@@ -545,7 +543,7 @@ void showmenu()
 	int y = 20;
 	int inc = 16;
 	x11.set_color_3i(0, 255, 0);
-	if(!g.sorting) {
+	if (!g.sorting) {
 		x11.drawString(10, y, "Menu");
 		y+= inc;
 		x11.drawString(10, y, "======");
@@ -576,8 +574,6 @@ void showmenu()
 		x11.drawString(10, y, "Wait until list is sorted for button input");
 	}
 }
-
-void physics() {}
 
 void render()
 {
