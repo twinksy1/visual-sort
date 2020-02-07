@@ -1,3 +1,6 @@
+/* ORIGINAL CREATOR: Juan Villasenor
+ * Feel free to use & modify :)
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,26 +26,27 @@ class Global {
 
 		bool sorting = false;
 		
-		Global() {
+		Global()
+		{
 			list = new int[amount];
 			srand((unsigned)time(NULL));
-			for(int i=0; i<amount; i++) {
+			for(int i=0; i<amount; i++)
 				list[i] = rand() % yres;
-			}
 			width = xres/amount;
 		}
 
-		void init() {
+		void init()
+		{
 			srand((unsigned)time(NULL));
 			amount = xres / BARWIDTH;
 			list = new int[amount];
-			for(int i=0; i<amount; i++) {
+			for(int i=0; i<amount; i++)
 				list[i] = rand() % yres;
-			}
 			width = xres/amount;
 		}
 
-		~Global() {
+		~Global()
+		{
 			delete list;
 			list = NULL;
 		}
@@ -57,7 +61,6 @@ private:
         XdbeSwapInfo swapInfo;
 public:
         X11_wrapper() {
-                int major, minor;
                 XSetWindowAttributes attributes;
                 XdbeBackBufferAttributes *backAttr;
                 dpy = XOpenDisplay(NULL);
@@ -76,9 +79,9 @@ public:
 		g.init();
                 //Create a window
                 win = XCreateWindow(dpy, root, 0, 0, g.xres, g.yres, 0,
-                                                    CopyFromParent, InputOutput, CopyFromParent,
-                                                    CWBackingStore | CWOverrideRedirect | CWEventMask |
-                                                        CWSaveUnder | CWBackPixel, &attributes);
+				CopyFromParent, InputOutput, CopyFromParent,
+				CWBackingStore | CWOverrideRedirect | CWEventMask |
+				CWSaveUnder | CWBackPixel, &attributes);
                 //Create gc
                 gc = XCreateGC(dpy, win, 0, NULL);
                 //Get back buffer and attributes
@@ -91,7 +94,7 @@ public:
                 setWindowTitle();
                 XMapWindow(dpy, win);
                 XRaiseWindow(dpy, win);
- }
+	}
         ~X11_wrapper() {
                 if(!XdbeDeallocateBackBufferName(dpy, backBuffer)) {
                         fprintf(stderr,"Error : unable to deallocate back buffer.\n");
@@ -158,6 +161,8 @@ int main()
 {
         srand((unsigned)time(NULL));
         int done = 0;
+	printf("	MENU OPTIONS ON TOP LEFT OF SCREEN\n");
+	sleep(2);
         while (!done) {
                 //Handle all events in queue
                 while (x11.getPending()) {
@@ -177,7 +182,6 @@ int main()
 
 void check_resize(XEvent *e)
 {
-        //ConfigureNotify is sent when the window is resized.
         if (e->type != ConfigureNotify)
                 return;
         XConfigureEvent xce = e->xconfigure;
@@ -210,20 +214,26 @@ void check_mouse(XEvent *e)
         }
 }
 
-//Randomize
-void shuffle() {
+void shuffle()
+{
 	for(int i=0; i<amount; i++) {
-		g.list[i] = rand() % g.yres;
+		int idx1 = rand() % amount;
+		int idx2 = rand() % amount;
+		SWAP(g.list[idx1], g.list[idx2]);
+
+		render();
+		x11.swapBuffers();
 	}
 }
-//Bubble sort
-void bubblesort() {
+
+void bubblesort()
+{
 	bool swapped = true;
 	auto start = std::chrono::high_resolution_clock::now();
 	while(swapped) {
 		swapped = false;
 		for(int i=0; i<amount; i++) {
-			if(g.list[i] > g.list[i+1]) {
+			if (g.list[i] > g.list[i+1]) {
 				int temp = g.list[i];
 				g.list[i] = g.list[i+1];
 				g.list[i+1] = temp;
@@ -237,8 +247,9 @@ void bubblesort() {
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 	printf("Bubble sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
 }
-//Insertion sort
-void insertionsort() {
+
+void insertionsort()
+{
 	int i, key, j;
 	auto start = std::chrono::high_resolution_clock::now();
 	for(i=1; i<amount; i++) {
@@ -257,15 +268,14 @@ void insertionsort() {
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 	printf("Insertion sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
 }
-//Selection sort
-void selectionsort() {
+
+void selectionsort()
+{
 	auto start = std::chrono::high_resolution_clock::now();
 	for(int i=0; i<amount-1; i++) {
-		for(int j=i+1; j<amount; j++) {
-			if(g.list[j] < g.list[i]) {
-				SWAP(g.list[i], g.list[j]);
-			}
-		}
+		for(int j=i+1; j<amount; j++) 
+			if (g.list[j] < g.list[i]) SWAP(g.list[i], g.list[j]);
+		
 		render();
 		x11.swapBuffers();
 	}
@@ -276,15 +286,12 @@ void selectionsort() {
 
 int partition (int low, int high)  
 {  
-    int pivot = g.list[high]; // pivot  
-    int i = (low-1); // Index of smaller element  
+    int pivot = g.list[high];
+    int i = (low-1);
   
-    for (int j = low; j <= high - 1; j++)  
-    {  
-        // If current element is smaller than the pivot  
-        if (g.list[j] < pivot)  
-        {  
-            i++; // increment index of smaller element  
+    for (int j = low; j <= high - 1; j++) {
+        if (g.list[j] < pivot) {
+            i++;
             SWAP(g.list[i], g.list[j]);  
         }  
     }  
@@ -307,7 +314,8 @@ void quicksort(int low, int high)
     }  
 }
 
-void count() {
+void count()
+{
 	auto start = std::chrono::high_resolution_clock::now();
 	int temp[g.yres];
 	for(int i=0; i<g.yres; i++)
@@ -321,21 +329,21 @@ void count() {
 		while(temp[i] > 0) {
 			g.list[j] = i;
 			j++;
-			if(j >= amount)
-				break;
+			if (j >= amount) break;
 			temp[i]--;
 			render();
 			x11.swapBuffers();
 		}
-		if(j >= amount)
-			break;
+		if (j >= amount) break;
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 	printf("Count sort elapsed time was %f seconds\n", elapsed.count()/1000.0);
 }
 
-void doubleSelectionsort() {
+void doubleSelectionsort()
+{
+	//EXPERIMENTAL SORTING FUNCTION*
  	auto start = std::chrono::steady_clock::now();
         
 	int front=0, end=amount-1, min, max, minIdx, maxIdx;
@@ -344,19 +352,19 @@ void doubleSelectionsort() {
 		min = 99999;
 		max = -1;
 		for(int j=front; j<=end; j++) {
-			if(g.list[j] >= max) {
+			if (g.list[j] >= max) {
 				max = g.list[j];
 				maxIdx = j;
 			}
-			else if(g.list[j] <= min) {
+			else if (g.list[j] <= min) {
 				min = g.list[j];
 				minIdx = j;
 			}
 		}
-		if(g.list[minIdx] == g.list[end] && g.list[front] == g.list[maxIdx]) {
+		if (g.list[minIdx] == g.list[end] && g.list[front] == g.list[maxIdx]) {
 			SWAP(g.list[minIdx], g.list[maxIdx]);
 		}
-		else if(g.list[maxIdx] == g.list[front]) {
+		else if (g.list[maxIdx] == g.list[front]) {
 			SWAP(g.list[end], g.list[maxIdx]);
 			SWAP(g.list[front], g.list[minIdx]);
 		}
@@ -376,89 +384,72 @@ void doubleSelectionsort() {
         return;
 }
 
-void merge(int arr[], int l, int m, int r) 
+void merge(int l, int m, int r) 
 { 
-    int i, j, k; 
-    int n1 = m - l + 1; 
-    int n2 =  r - m; 
-  
-    /* create temp arrays */
-    int L[n1], R[n2]; 
-  
-    /* Copy data to temp arrays L[] and R[] */
-    for (i = 0; i < n1; i++) 
-        L[i] = arr[l + i]; 
-    for (j = 0; j < n2; j++) 
-        R[j] = arr[m + 1+ j]; 
-  
-    /* Merge the temp arrays back into arr[l..r]*/
-    i = 0; // Initial index of first subarray 
-    j = 0; // Initial index of second subarray 
-    k = l; // Initial index of merged subarray 
-    while (i < n1 && j < n2) 
-    { 
-        if (L[i] <= R[j]) 
-        { 
-            arr[k] = L[i]; 
-            i++; 
-        } 
-        else
-        { 
-            arr[k] = R[j]; 
-            j++; 
-        } 
-        k++; 
-    } 
-  
-    /* Copy the remaining elements of L[], if there 
-       are any */
-    while (i < n1) 
-    { 
-        arr[k] = L[i]; 
-        i++; 
-        k++; 
-    } 
-  
-    /* Copy the remaining elements of R[], if there 
-       are any */
-    while (j < n2) 
-    { 
-        arr[k] = R[j]; 
-        j++; 
-        k++; 
-    } 
+	int i, j, k; 
+	int n1 = m - l + 1; 
+	int n2 =  r - m; 
+
+	int L[n1], R[n2]; 
+
+	for (i = 0; i < n1; i++) 
+		L[i] = g.list[l+i]; 
+	for (j = 0; j < n2; j++) 
+		R[j] = g.list[m+1+j]; 
+
+	i = 0; 
+	j = 0; 
+	k = l; 
+	while (i < n1 && j < n2) 
+	{ 
+		if (L[i] <= R[j]) { 
+			g.list[k] = L[i]; 
+			i++; 
+		} else { 
+			g.list[k] = R[j]; 
+			j++; 
+		} 
+		k++; 
+	} 
+
+	while (i < n1) { 
+		g.list[k] = L[i]; 
+		i++; 
+		k++; 
+	} 
+
+	while (j < n2) { 
+		g.list[k] = R[j]; 
+		j++; 
+		k++; 
+	} 
 	render();
 	x11.swapBuffers();
 } 
   
-/* l is for left index and r is right index of the 
-   sub-array of arr to be sorted */
-void mergesort(int arr[], int l, int r) 
+void mergesort(int l, int r) 
 { 
-    if (l < r) 
-    { 
-        // Same as (l+r)/2, but avoids overflow for 
-        // large l and h 
-        int m = l+(r-l)/2; 
-  
-        // Sort first and second halves 
-        mergesort(arr, l, m); 
-        mergesort(arr, m+1, r); 
-  
-        merge(arr, l, m, r); 
-    } 
+	if (l < r) { 
+		int m = l+(r-l)/2; 
+
+		mergesort(l, m); 
+		mergesort(m+1, r); 
+
+		merge(l, m, r); 
+	} 
 }
 
-void heapify(int n, int i) {
+void heapify(int n, int i)
+{
 	int largest = i;
-	int l = 2*i + 1;
-	int r = 2*i + 2;
+	int child1 = 2*i + 1;
+	int child2 = 2*i + 2;
 
-	if(l<n && g.list[l] > g.list[largest])
-		largest = l;
+	if(child1<n && g.list[child1] > g.list[largest])
+		largest = child1;
 
-	if(r<n && g.list[r] > g.list[largest])
-		largest = r;
+	if(child2<n && g.list[child2] > g.list[largest])
+		largest = child2;
 
 	if(largest != i) {
 		SWAP(g.list[i], g.list[largest]);
@@ -466,7 +457,8 @@ void heapify(int n, int i) {
 	}
 }
 
-void heapsort(int n) {
+void heapsort(int n)
+{
 	for(int i=n/2-1; i>=0; i--) 
 		heapify(n, i);
 	for(int i=n-1; i>=0; i--) {
@@ -479,7 +471,6 @@ void heapsort(int n) {
 
 int check_keys(XEvent *e)
 {
-        //Was there input from the keyboard?
         if (e->type != KeyPress && e->type != KeyPress)
                 return 0;
         int key = XLookupKeysym(&e->xkey, 0);
@@ -525,7 +516,7 @@ int check_keys(XEvent *e)
 		case XK_m: {
 			g.sorting = true;
 			auto start = std::chrono::high_resolution_clock::now();
-			mergesort(g.list,0,amount);
+			mergesort(0,amount);
 			g.sorting = false;
 			auto end = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -549,7 +540,8 @@ int check_keys(XEvent *e)
 	return(0);
 }
 
-void showmenu() {
+void showmenu()
+{
 	int y = 20;
 	int inc = 16;
 	x11.set_color_3i(0, 255, 0);
@@ -558,7 +550,9 @@ void showmenu() {
 		y+= inc;
 		x11.drawString(10, y, "======");
 		y+= inc;
-		x11.drawString(10, y, "1 - Randomize list");
+		x11.drawString(10, y, "ESC - Exit program");
+		y+= inc;
+		x11.drawString(10, y, "1 - Shuffle list");
 		y+= inc;
 		x11.drawString(10, y, "B - Bubble sort");
 		y+= inc;
@@ -570,7 +564,11 @@ void showmenu() {
 		y+= inc;
 		x11.drawString(10, y, "H - Heap sort");
 		y+= inc;
-		x11.drawString(10, y, "Q - Quick sort");	
+		x11.drawString(10, y, "Q - Quick sort");
+		y+= inc;
+		x11.drawString(10, y, "D - Double Selection sort");
+		y+= inc;
+		x11.drawString(10, y, "C - Counting sort");
 	}
 	else {
 		x11.drawString(10, y, "Currently sorting....");
@@ -581,7 +579,8 @@ void showmenu() {
 
 void physics() {}
 
-void render() {
+void render()
+{
 	x11.clear_screen();
 	double xpos = 0;
 	for(int i=0; i<amount; i++) {
