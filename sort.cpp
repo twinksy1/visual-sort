@@ -230,19 +230,27 @@ void shuffle()
 
 void bubblesort()
 {
-	bool swapped = true;
 	auto start = std::chrono::high_resolution_clock::now();
+	bool swapped = true;
+
 	while(swapped) {
 		swapped = false;
-		for(int i=0; i<amount; i++) {
-			if (g.list[i] > g.list[i+1]) {
+		for(int i=0; i<amount-1; i++) {
+			if(g.list[i] > g.list[i+1]) {
 				SWAP(g.list[i], g.list[i+1]);
 				swapped = true;
 				render();
 				x11.swapBuffers();
 			}
+			if(g.list[i] < g.list[i-1]) {
+				SWAP(g.list[i], g.list[i-1]);
+				swapped = true;
+				render();
+				x11.swapBuffers();
+			}
 		}
-	}
+	}	
+	
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 	printf("\nBubble sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
@@ -252,11 +260,12 @@ void cocktailsort()
 {
 	bool swapped = true;
 	auto start = std::chrono::high_resolution_clock::now();
+	int endbound = amount, startbound = 0;
 	int i=0;
 
 	while(swapped) {
 		swapped = false;
-		for(i; i<amount; i++) {
+		for(i=startbound; i<endbound; i++) {
 			if (g.list[i] > g.list[i+1]) {
 				SWAP(g.list[i], g.list[i+1]);
 				swapped = true;
@@ -264,7 +273,7 @@ void cocktailsort()
 				x11.swapBuffers();
 			}
 		}
-		for(i-=1; i>0; i--) {
+		for(i-=1; i>startbound; i--) {
 			if (g.list[i] < g.list[i-1]) {
 				SWAP(g.list[i], g.list[i-1]);
 				swapped = true;
@@ -272,6 +281,8 @@ void cocktailsort()
 				x11.swapBuffers();
 			}
 		}
+		startbound++;
+		endbound--;
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
