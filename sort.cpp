@@ -236,9 +236,7 @@ void bubblesort()
 		swapped = false;
 		for(int i=0; i<amount; i++) {
 			if (g.list[i] > g.list[i+1]) {
-				int temp = g.list[i];
-				g.list[i] = g.list[i+1];
-				g.list[i+1] = temp;
+				SWAP(g.list[i], g.list[i+1]);
 				swapped = true;
 				render();
 				x11.swapBuffers();
@@ -248,6 +246,36 @@ void bubblesort()
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 	printf("\nBubble sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
+}
+
+void cocktailsort()
+{
+	bool swapped = true;
+	auto start = std::chrono::high_resolution_clock::now();
+	int i=0;
+
+	while(swapped) {
+		swapped = false;
+		for(i; i<amount; i++) {
+			if (g.list[i] > g.list[i+1]) {
+				SWAP(g.list[i], g.list[i+1]);
+				swapped = true;
+				render();
+				x11.swapBuffers();
+			}
+		}
+		for(i-=1; i>0; i--) {
+			if (g.list[i] < g.list[i-1]) {
+				SWAP(g.list[i], g.list[i-1]);
+				swapped = true;
+				render();
+				x11.swapBuffers();
+			}
+		}
+	}
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> elapsed = end - start;
+	printf("\nCocktail sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 }
 
 void insertionsort()
@@ -320,7 +348,7 @@ void quicksort(int low, int high)
 void count()
 {
 	auto start = std::chrono::high_resolution_clock::now();
-	int temp[g.yres];
+	int* temp = new int[g.yres];
 	for(int i=0; i<g.yres; i++)
 		temp[i] = 0;
 	for(int i=0; i<amount; i++) {
@@ -332,13 +360,15 @@ void count()
 		while(temp[i] > 0) {
 			g.list[j] = i;
 			j++;
-			if (j >= amount) break;
 			temp[i]--;
 			render();
 			x11.swapBuffers();
 		}
-		if (j >= amount) break;
 	}
+
+	delete temp;
+	temp = NULL;
+
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 	printf("\nCount sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
@@ -514,6 +544,11 @@ int check_keys(XEvent *e)
 			bubblesort();
 			g.sorting = false;
 			break;
+		case XK_o:
+			g.sorting = true;
+			cocktailsort();
+			g.sorting = false;
+			break;
 		case XK_i:
 			g.sorting = true;
 			insertionsort();
@@ -571,6 +606,8 @@ void showmenu()
 		x11.drawString(10, y, "1 - Shuffle list");
 		y+= inc;
 		x11.drawString(10, y, "B - Bubble sort");
+		y+= inc;
+		x11.drawString(10, y, "O - Cocktail sort");
 		y+= inc;
 		x11.drawString(10, y, "S - Selection sort");
 		y+= inc;
