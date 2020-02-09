@@ -13,9 +13,12 @@
 #include <chrono>
 
 int amount = 100;
+// Bigger BARWIDTH number = wider rectangles
+// Smaller BARWIDTH number = less wide
 #define BARWIDTH 15
 #define SWAP(x,y) {int temp=x; x=y; y=temp;}
 
+//Holds all the global vars, list of nums is here
 class Global {
 	public:
 		int xres = 1280;
@@ -52,6 +55,7 @@ class Global {
 		}
 } g;
 
+//holds x11 properties
 class X11_wrapper {
 private:
         Display *dpy;
@@ -164,7 +168,6 @@ int main()
 	printf("\x1b[1m	MENU OPTIONS ON TOP LEFT OF SCREEN\n");
 	sleep(2);
         while(!done) {
-                //Handle all events in queue
                 while(x11.getPending()) {
                         XEvent e;
                         x11.getNextEvent(&e);
@@ -172,6 +175,7 @@ int main()
                         check_mouse(&e);
                         done = check_keys(&e);
                 }
+		//rendering every frame
                 render();
                 x11.swapBuffers();
         }
@@ -236,10 +240,10 @@ void bubblesort()
 				g.list[i] = g.list[i+1];
 				g.list[i+1] = temp;
 				swapped = true;
+				render();
+				x11.swapBuffers();
 			}
 		}
-		render();
-		x11.swapBuffers();
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -257,10 +261,10 @@ void insertionsort()
 		while(j >= 0 && g.list[j] > key) {
 			g.list[j+1] = g.list[j];
 			j--;
+			render();
+			x11.swapBuffers();
 		}
 		g.list[j+1] = key;
-		render();
-		x11.swapBuffers();
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -272,10 +276,11 @@ void selectionsort()
 	auto start = std::chrono::high_resolution_clock::now();
 	for(int i=0; i<amount-1; i++) {
 		for(int j=i+1; j<amount; j++) 
-			if (g.list[j] < g.list[i]) SWAP(g.list[i], g.list[j]);
-		
-		render();
-		x11.swapBuffers();
+			if (g.list[j] < g.list[i]) {
+				SWAP(g.list[i], g.list[j]);
+				render();
+				x11.swapBuffers();
+			}
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -284,17 +289,21 @@ void selectionsort()
 
 int partition (int low, int high)  
 {  
-    int pivot = g.list[high];
-    int i = (low-1);
+	int pivot = g.list[high];
+	int i = (low-1);
   
-    for (int j = low; j <= high - 1; j++) {
-        if (g.list[j] < pivot) {
-            i++;
-            SWAP(g.list[i], g.list[j]);  
-        }  
-    }  
-    SWAP(g.list[i + 1], g.list[high]); 
-    return (i + 1);  
+	for (int j = low; j <= high - 1; j++) {
+		if (g.list[j] < pivot) {
+			i++;
+			SWAP(g.list[i], g.list[j]);  
+			render();
+			x11.swapBuffers();	
+        	}  
+    	}  
+    	SWAP(g.list[i + 1], g.list[high]); 
+	render();
+	x11.swapBuffers();	
+    	return (i + 1);  
 }  
   
 void quicksort(int low, int high)  
@@ -304,11 +313,7 @@ void quicksort(int low, int high)
         int pi = partition(low, high);  
   
         quicksort(low, pi - 1);  
-        render();
-        x11.swapBuffers();	
         quicksort(pi+1, high);  
-        render();
-        x11.swapBuffers();	
     }  
 }
 
@@ -341,14 +346,15 @@ void count()
 
 void doubleSelectionsort()
 {
-	//EXPERIMENTAL SORTING FUNCTION*
  	auto start = std::chrono::steady_clock::now();
         
 	int front=0, end=amount-1, min, max, minIdx, maxIdx;
 
-	for(int i=front; i<=end; i++) {
-		min = 99999;
-		max = -1;
+	for(front; front<end;) {
+		min = g.list[front];
+		max = g.list[end];
+		maxIdx = end;
+		minIdx = front;
 		for(int j=front; j<=end; j++) {
 			if (g.list[j] >= max) {
 				max = g.list[j];
@@ -361,19 +367,25 @@ void doubleSelectionsort()
 		}
 		if (g.list[minIdx] == g.list[end] && g.list[front] == g.list[maxIdx]) {
 			SWAP(g.list[minIdx], g.list[maxIdx]);
-		}
-		else if (g.list[maxIdx] == g.list[front]) {
+			render();
+			x11.swapBuffers();
+		} else if (g.list[maxIdx] == g.list[front]) {
 			SWAP(g.list[end], g.list[maxIdx]);
+			render();
+			x11.swapBuffers();
 			SWAP(g.list[front], g.list[minIdx]);
-		}
-		else {
+			render();
+			x11.swapBuffers();
+		} else {
 			SWAP(g.list[front], g.list[minIdx]);
+			render();
+			x11.swapBuffers();
 			SWAP(g.list[end], g.list[maxIdx]);
+			render();
+			x11.swapBuffers();
 		}
 		front++;
 		end--;
-		render();
-		x11.swapBuffers();
 	}
 
 	auto endTime = std::chrono::steady_clock::now();
@@ -408,21 +420,25 @@ void merge(int l, int m, int r)
 			j++; 
 		} 
 		k++; 
+		render();
+		x11.swapBuffers();
 	} 
 
 	while(i < n1) { 
 		g.list[k] = L[i]; 
 		i++; 
 		k++; 
+		render();
+		x11.swapBuffers();
 	} 
 
 	while(j < n2) { 
 		g.list[k] = R[j]; 
 		j++; 
 		k++; 
+		render();
+		x11.swapBuffers();
 	} 
-	render();
-	x11.swapBuffers();
 } 
   
 void mergesort(int l, int r) 
@@ -451,6 +467,8 @@ void heapify(int n, int i)
 
 	if (largest != i) {
 		SWAP(g.list[i], g.list[largest]);
+		render();
+		x11.swapBuffers();
 		heapify(n, largest);
 	}
 }
@@ -461,9 +479,9 @@ void heapsort(int n)
 		heapify(n, i);
 	for(int i=n-1; i>=0; i--) {
 		SWAP(g.list[0], g.list[i]);
-		heapify(i, 0);
 		render();
 		x11.swapBuffers();
+		heapify(i, 0);
 	}
 }
 

@@ -6,5 +6,4 @@
 
 -"make RUN" to quickly compile and run
 
--The double selection sort was just an experimental idea that came to mind, it sorts the list but with some
-	small, noticeable errors
+-terminal shows how long each sort took in seconds
