@@ -15,7 +15,7 @@
 int amount = 100;
 // Bigger BARWIDTH number = wider rectangles
 // Smaller BARWIDTH number = less wide
-#define BARWIDTH 15
+#define BARWIDTH 30
 #define SWAP(x,y) {int temp=x; x=y; y=temp;}
 
 //Holds all the global vars, list of nums is here
