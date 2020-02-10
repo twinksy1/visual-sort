@@ -304,6 +304,8 @@ void insertionsort()
 			x11.swapBuffers();
 		}
 		g.list[j+1] = key;
+		render();
+		x11.swapBuffers();
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -354,6 +356,30 @@ void quicksort(int low, int high)
         quicksort(low, pi - 1);  
         quicksort(pi+1, high);  
     }  
+}
+
+void shellsort()
+{
+	int h = amount / 2;
+	int key, j;
+	auto start = std::chrono::high_resolution_clock::now();
+
+	for(h; h>0; h /= 2) {
+		for(int i=h; i<amount; i++) {
+			key = g.list[i];
+			for(j=i; j>=h && g.list[j-h] > key; j-=h) {
+				g.list[j] = g.list[j-h];
+				render();
+				x11.swapBuffers();
+			}
+			g.list[j] = key;
+			render();
+			x11.swapBuffers();
+		}
+	}	
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> elapsed = end - start;
+	printf("\nShell sort elapsed time was %.2f seconds\n", elapsed.count()/1000.0);
 }
 
 void count()
@@ -514,8 +540,9 @@ void heapify(int n, int i)
 	}
 }
 
-void heapsort(int n)
+void heapsort()
 {
+	int n = amount;
 	for(int i=n/2-1; i>=0; i--) 
 		heapify(n, i);
 	for(int i=n-1; i>=0; i--) {
@@ -555,6 +582,11 @@ int check_keys(XEvent *e)
 			bubblesort();
 			g.sorting = false;
 			break;
+		case XK_w:
+			g.sorting = true;
+			shellsort();
+			g.sorting = false;
+			break;
 		case XK_o:
 			g.sorting = true;
 			cocktailsort();
@@ -588,7 +620,7 @@ int check_keys(XEvent *e)
 		case XK_h: {
 			g.sorting = true;
 			auto start = std::chrono::high_resolution_clock::now();
-			heapsort(amount);
+			heapsort();
 			g.sorting = false;
 			auto end = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -606,6 +638,8 @@ void showmenu()
 {
 	int y = 20;
 	int inc = 16;
+	char buf[32];
+	sprintf(buf, "%d elements in list", amount);
 	x11.set_color_3i(0, 255, 0);
 	if (!g.sorting) {
 		x11.drawString(10, y, "Menu");
@@ -633,11 +667,19 @@ void showmenu()
 		x11.drawString(10, y, "D - Double Selection sort");
 		y+= inc;
 		x11.drawString(10, y, "C - Counting sort");
+		y+= inc;
+		x11.drawString(10, y, "W - Shell sort");
+		x11.set_color_3i(255, 0, 0);
+		y+= inc;
+		x11.drawString(10, y, buf);
 	}
 	else {
 		x11.drawString(10, y, "Currently sorting....");
 		y+= inc;
 		x11.drawString(10, y, "Wait until list is sorted for button input");
+		x11.set_color_3i(255, 0, 0);
+		y+= inc;
+		x11.drawString(10, y, buf);
 	}
 }
 
