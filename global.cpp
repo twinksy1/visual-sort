@@ -56,6 +56,40 @@ void Global::renderMenu(X11& x11) {
                         cur = &options[i];
                         x11.setColor(200,200,200);
                         x11.fillRectangle(cur->getX(),cur->getY(),cur->getWidth(),cur->getHeight());
+                        x11.setColor(0,0,0);
+                        // Title on buttons
+                        switch(cur->getValue()) {
+                                case SHUFFLE:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "SHUFFLE");
+                                        break;
+                                case BUBBLESORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "BUBBLE");
+                                        break;
+                                case SELECTIONSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "SELECTION");
+                                        break;
+                                case INSERTIONSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "INSERTION");
+                                        break;
+                                case SHELLSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "SHELL");
+                                        break;
+                                case BISELECTIONSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "BI-SELECTION");
+                                        break;
+                                case COCKTAILSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "COCKTAIL");
+                                        break;
+                                case MERGESORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "MERGE");
+                                        break;
+                                case HEAPSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "HEAP");
+                                        break;
+                                case QUICKSORT:
+                                        x11.drawString(cur->getX() + 10, cur->getY() + (cur->getHeight()/2), "QUICK");
+                                        break;
+                        }
                 }
 	}
 	else {
