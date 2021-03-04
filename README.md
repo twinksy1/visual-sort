@@ -15,5 +15,6 @@ Execution: ***./sort***
 * ~~List is generated dynamically depending on current window size~~ List amount is now generated with the green slider
 * ~~Changing macro BARWIDTH changes how wide or small rectangles should be, 30 is default good size~~ Width of rectangles now only depends on the amount and X resolution
 * ~~terminal shows how long each sort took in seconds~~ Removed elapsed time
+* Click & drag slider to change the amount of elements in the list (*amount displayed on slider*)
 * Clickable buttons to choose between sorting algorithms
 * Shuffle button to quickly shuffle the list
