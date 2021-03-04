@@ -10,7 +10,7 @@ Then in cloned directory:
 * **Build**: *make*
 * **Build & run**: *make run*
 ---
-Execution: *./sort*
+Execution: ***./sort***
 ## FEATURES
 * ~~List is generated dynamically depending on current window size~~ List amount is now generated with the green slider
 * ~~Changing macro BARWIDTH changes how wide or small rectangles should be, 30 is default good size~~ Width of rectangles now only depends on the amount and X resolution
