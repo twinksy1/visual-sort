@@ -18,3 +18,5 @@ Execution: ***./sort***
 * Click & drag slider to change the amount of elements in the list (*amount displayed on slider*)
 * Clickable buttons to choose between sorting algorithms
 * Shuffle button to quickly shuffle the list
+## GIF OF PROGRAM EXECUTION
+![GIF](./visualsort.gif)
